@@ -8,40 +8,39 @@ on:
 jobs:
   update-swagger:
     runs-on: ubuntu-latest
-   
+    
     steps:
-    - name: Clone githubworkflowA
+    - name: Clone incidents repository
       uses: actions/checkout@v2
 
-    - name: Clone githubworkflowB
+    - name: Clone service-catalog repository
       uses: actions/checkout@v2
       with:
         repository: centralcordoba/githubworkflowB
         token: ${{ secrets.SECRET_WORK_FLOW }}
         path: temp-repo
 
-    - name: Copy swagger.yaml to repository githubworkflowB
+    - name: Copy swagger.yaml to repository service-catalog
       run: |
         cp swagger.yaml temp-repo/swagger.yaml
 
-    # Agregar y hacer commit de los cambios en el repositorio githubworkflowB
-    - name: Commit changes to githubworkflowB
+    - name: Commit changes to new branch in service-catalog repository
       run: |
         cd temp-repo
-        git config user.name "centralcordoba"
-        git config user.email "lejiei@gmail.com"
-        git add .
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
+        git checkout -b update-swagger-${{ github.run_id }} # Crear y cambiar a una nueva rama
+        git add swagger.yaml
         git commit -m "Update swagger.yaml"
-        git push origin main
+        git push origin update-swagger-${{ github.run_id }}
 
-    # Crear un PR usando la herramienta de línea de comandos de GitHub
-    - name: Create Pull Request in githubworkflowB
+    - name: Create Pull Request using GitHub CLI
       run: |
         gh pr create --repo centralcordoba/githubworkflowB \
-        --base main \
-        --head main \
-        --title "Update de swagger.yaml" \
-        --body "Updated file swagger.yaml from incidents repository." \
-        --reviewer centralcordoba
+          --base main \
+          --head update-swagger-${{ github.run_id }} \
+          --title "Update de swagger.yaml" \
+          --body "Updated file swagger.yaml from incidents repository." \
+          --reviewer centralcordoba
       env:
         GH_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
