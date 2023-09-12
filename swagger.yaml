@@ -1,0 +1,475 @@
+openapi: 3.0.1
+info:
+  title: Incidents.Web
+  version: '1.0'
+paths:
+  /DetectionDefinitions:
+    post:
+      tags:
+        - DetectionDefinitions
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionDefinitionRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionDefinitionRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionDefinitionRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionDefinitionRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CreateDetectionDefinitionResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDetectionDefinitionResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CreateDetectionDefinitionResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server Error
+        '503':
+          description: Server Error
+  '/Detections/{detectionId}/Acknowledgements/{id}':
+    get:
+      tags:
+        - Detections
+      parameters:
+        - name: detectionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+  '/Detections/{detectionId}/Acknowledgements':
+    post:
+      tags:
+        - Detections
+      parameters:
+        - name: detectionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionAcknowledgementRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionAcknowledgementRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionAcknowledgementRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateDetectionAcknowledgementRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DetectionAcknowledgementResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectionAcknowledgementResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DetectionAcknowledgementResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /RecommendationDefinitions:
+    post:
+      tags:
+        - RecommendationDefinitions
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationDefinitionRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationDefinitionRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationDefinitionRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationDefinitionRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CreateRecommendationDefinitionResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRecommendationDefinitionResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CreateRecommendationDefinitionResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server Error
+        '503':
+          description: Server Error
+  '/Recommendations/{recommendationId}/Acknowledgements/{id}':
+    get:
+      tags:
+        - Recommendations
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+  '/Recommendations/{recommendationId}/Acknowledgements':
+    post:
+      tags:
+        - Recommendations
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationAcknowledgementRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationAcknowledgementRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationAcknowledgementRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateRecommendationAcknowledgementRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/RecommendationAcknowledgementResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationAcknowledgementResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationAcknowledgementResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    CreateDetectionAcknowledgementRequest:
+      required:
+        - status
+      type: object
+      properties:
+        description:
+          maxLength: 2000
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/DetectionStatus'
+      additionalProperties: false
+    CreateDetectionDefinitionRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        version:
+          type: string
+          format: date-time
+        severity:
+          type: integer
+          format: int32
+        summary:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        concern:
+          type: string
+          nullable: true
+        remediation:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateDetectionDefinitionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        version:
+          type: string
+          format: date-time
+        severity:
+          type: integer
+          format: int32
+        summary:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        concern:
+          type: string
+          nullable: true
+        remediation:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateRecommendationAcknowledgementRequest:
+      required:
+        - status
+      type: object
+      properties:
+        description:
+          maxLength: 2000
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/RecommendationStatus'
+      additionalProperties: false
+    CreateRecommendationDefinitionRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        version:
+          type: string
+          format: date-time
+        severity:
+          type: integer
+          format: int32
+        summary:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        concern:
+          type: string
+          nullable: true
+        remediation:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CreateRecommendationDefinitionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        version:
+          type: string
+          format: date-time
+        severity:
+          type: integer
+          format: int32
+        summary:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        concern:
+          type: string
+          nullable: true
+        remediation:
+          type: string
+          nullable: true
+      additionalProperties: false
+    DetectionAcknowledgementResponse:
+      required:
+        - description
+        - detectionId
+        - id
+        - status
+        - tenantId
+        - timestamp
+        - userId
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          maxLength: 2000
+          minLength: 1
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/DetectionStatus'
+        userId:
+          minLength: 1
+          type: string
+        tenantId:
+          minLength: 1
+          type: string
+        detectionId:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    DetectionStatus:
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      type: integer
+      format: int32
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: { }
+    RecommendationAcknowledgementResponse:
+      required:
+        - description
+        - id
+        - recommendationId
+        - status
+        - tenantId
+        - timestamp
+        - userId
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          maxLength: 2000
+          minLength: 1
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/RecommendationStatus'
+        userId:
+          minLength: 1
+          type: string
+        tenantId:
+          minLength: 1
+          type: string
+        recommendationId:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    RecommendationStatus:
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+      type: integer
+      format: int32
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      description: 'Enter using the following format: "Bearer {token}"'
+      name: Authorization
+      in: header
+security:
+  - Bearer: [ ]
