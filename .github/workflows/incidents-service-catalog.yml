@@ -16,7 +16,7 @@ jobs:
     - name: Clone service-catalog repository
       uses: actions/checkout@v2
       with:
-        repository: centralcordoba/https://github.com/centralcordoba/githubworkflowB
+        repository: centralcordoba/githubworkflowB
         token: ${{ secrets.SECRET_WORK_FLOW }}
         path: temp-repo
 
