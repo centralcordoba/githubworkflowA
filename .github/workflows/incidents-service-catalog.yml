@@ -33,5 +33,5 @@ jobs:
         title: Update de swagger.yaml
         body: Updated file swagger.yaml from incidents repository.
         branch: update-swagger
-        base: master  # o el nombre de la rama a la que quieras hacer el PR
+        base: main  # o el nombre de la rama a la que quieras hacer el PR
         reviewers: centralcordoba
