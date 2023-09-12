@@ -16,8 +16,8 @@ jobs:
     - name: Clone service-catalog repository
       uses: actions/checkout@v2
       with:
-        repository: emanueljimenez3705/https://github.com/BeyondTrust/service-catalog
-        token: ${{ secrets.SERVICE_CATALOG_OPEN_PR_TOKEN }}
+        repository: centralcordoba/https://github.com/centralcordoba/githubworkflowB
+        token: ${{ secrets.SECRET_WORK_FLOW }}
         path: temp-repo
 
     - name: Copy swagger.yaml to repository service-catalog
@@ -25,13 +25,13 @@ jobs:
         cp swagger.yaml temp-repo/swagger.yaml
 
     - name: Create Pull Request in service-catalog repository
-      uses: emanueljimenez3705/create-pull-request@v3
+      uses: centralcordoba/create-pull-request@v3
       with:
-        token: ${{ secrets.SERVICE_CATALOG_OPEN_PR_TOKEN }}
+        token: ${{ secrets.SECRET_WORK_FLOW }}
         path: temp-repo
         commit-message: Update swagger.yaml
         title: Update de swagger.yaml
         body: Updated file swagger.yaml from incidents repository.
         branch: update-swagger
         base: master  # o el nombre de la rama a la que quieras hacer el PR
-        reviewers: tshowers-bt
+        reviewers: centralcordoba
