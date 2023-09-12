@@ -1,23 +1,20 @@
-name: Update swagger.yaml repository service-catalog
+name: Request Pull Request
 
 on:
   push:
-    paths:
-      - 'swagger.yaml'
+    branches:
+      - main
 
 jobs:
-  update-swagger:
+  request-pull-request:
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Clone incidents repository
-      uses: actions/checkout@v2
 
+    steps:
     - name: Clone service-catalog repository
       uses: actions/checkout@v2
       with:
         repository: centralcordoba/githubworkflowB
-        token: ${{ secrets.SECRET_WORK_FLOW }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         path: temp-repo
 
     - name: Copy swagger.yaml to repository service-catalog
@@ -27,11 +24,11 @@ jobs:
     - name: Create Pull Request in service-catalog repository
       uses: centralcordoba/create-pull-request@v3
       with:
-        token: ${{ secrets.SECRET_WORK_FLOW }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         path: temp-repo
         commit-message: Update swagger.yaml
-        title: Update de swagger.yaml
+        title: Update swagger.yaml
         body: Updated file swagger.yaml from incidents repository.
         branch: update-swagger
-        base: main  # o el nombre de la rama a la que quieras hacer el PR
+        base: main
         reviewers: centralcordoba
