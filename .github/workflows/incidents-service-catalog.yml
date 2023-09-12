@@ -25,7 +25,7 @@ jobs:
         cp swagger.yaml temp-repo/swagger.yaml
 
     - name: Create Pull Request in service-catalog repository
-      uses: centralcordoba/create-pull-request
+      uses: centralcordoba/create-pull-request@v3
       with:
         token: ${{ secrets.SECRET_WORK_FLOW }}
         path: temp-repo
