@@ -29,6 +29,7 @@
 **/*.log.*
 *.log
 *.db
+*.vsidx
 .vs/
 Publish/
 WebApplicationA/.vs/WebApplicationA/v17/.suo
