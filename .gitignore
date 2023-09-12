@@ -31,3 +31,6 @@
 *.db
 .vs/
 Publish/
+WebApplicationA/.vs/WebApplicationA/v17/.suo
+*.cache
+WebApplicationA/.vs/WebApplicationA/v17/.suo
