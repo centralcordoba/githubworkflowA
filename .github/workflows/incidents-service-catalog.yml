@@ -32,14 +32,14 @@ jobs:
         git config user.email "lejiei@gmail.com"
         git add .
         git commit -m "Update swagger.yaml"
-        git push origin update-swagger
+        git push origin main
 
     # Crear un PR usando la herramienta de línea de comandos de GitHub
     - name: Create Pull Request in githubworkflowB
       run: |
         gh pr create --repo centralcordoba/githubworkflowB \
         --base main \
-        --head update-swagger \
+        --head main \
         --title "Update de swagger.yaml" \
         --body "Updated file swagger.yaml from incidents repository." \
         --reviewer centralcordoba
