@@ -27,12 +27,15 @@ jobs:
           repository: centralcordoba/${{ env.REPO_NAME }}
           token: ${{ secrets.SECRET_WORK_FLOW }}
           path: ${{ env.REPO_PATH }}
-          ref: main # Asegúrate de que 'main' es la rama predeterminada en githubworkflowB
+          ref: main # Asegurándote de que 'main' es la rama predeterminada en githubworkflowB
 
       - name: Copy swagger.yaml to repository githubworkflowB
         run: cp swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
 
-      - name: Commit changes to main branch
+      - name: Randomize Branch Name
+        run: echo "BRANCH_NAME=update-swagger-$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Commit changes to a new branch
         id: commit
         uses: EndBug/add-and-commit@v9
         with:
@@ -40,14 +43,20 @@ jobs:
           default_author: github_actions
           author_name: apibot
           message: "Update swagger.yaml"
+          new_branch: ${{ env.BRANCH_NAME }}
           directory: ${{ env.REPO_PATH }}
+
+      - name: Push the new branch
+        run: |
+          cd ${{ env.REPO_PATH }}
+          git push origin ${{ env.BRANCH_NAME }}
 
       - name: Create PR
         if: ${{ steps.commit.outputs.committed == 'true' }}
         run: |
-          gh pr create --repo centralcordoba/githubworkflowB \
+          gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
             --base main \
-            --head main \
+            --head ${{ env.BRANCH_NAME }} \
             --title "Update swagger.yaml" \
             --body "Updated file swagger.yaml from incidents repository." \
             --reviewer centralcordoba
