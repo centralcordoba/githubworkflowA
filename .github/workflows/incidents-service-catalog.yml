@@ -24,7 +24,7 @@ jobs:
       - name: Clone githubworkflowB repository
         uses: actions/checkout@v3
         with:
-          repository: beyondtrust/${{ env.REPO_NAME }}
+          repository: centralcordoba/${{ env.REPO_NAME }}
           token: ${{ secrets.SECRET_WORK_FLOW }}
           path: ${{ env.REPO_PATH }}
 
