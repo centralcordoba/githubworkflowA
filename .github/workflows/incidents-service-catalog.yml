@@ -45,7 +45,7 @@ jobs:
       - name: Create PR
         if: ${{ steps.commit.outputs.committed == 'true' }}
         run: |
-          gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
+          gh pr create --repo centralcordoba/githubworkflowB \
             --base main \
             --head main \
             --title "Update swagger.yaml" \

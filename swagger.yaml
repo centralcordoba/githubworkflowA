@@ -50,7 +50,7 @@ paths:
           description: Server Error
         '503':
           description: Server Error
-  '/Detections/{detectionId}/Acknowledgements/reset12345678/{id}':
+  '/Detections/{detectionId}/Acknowledgements/reset123456789/{id}':
     get:
       tags:
         - Detections
