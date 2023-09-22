@@ -1,55 +1,54 @@
-name: Update swagger.yaml in repository githubworkflowB
+name: Update swagger.yaml repository service-catalog
 
 on:
   push:
     paths:
       - 'swagger.yaml'
-
 permissions:
   contents: write
   pull-requests: write
-
+  
 env:
   REPO_NAME: githubworkflowB
   REPO_PATH: temp-repo
   TEMP_BRANCH_NAME: temp-update-swagger-$(date +'%s')
 
 jobs:
-  checkout-and-update:
-    name: Checkout and Update swagger.yaml
+  update-swagger:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repo A (the current repo)
-        uses: actions/checkout@v3
+    - name: Clone incidents repository
+      uses: actions/checkout@v3
 
-      - name: Clone githubworkflowB repository
-        uses: actions/checkout@v3
-        with:
-          repository: centralcordoba/${{ env.REPO_NAME }}
-          token: ${{ secrets.SECRET_WORK_FLOW }}
-          path: ${{ env.REPO_PATH }}
+    - name: Clone service-catalog repository
+      uses: actions/checkout@v3
+      with:
+        repository: centralcordoba/${{ env.REPO_NAME }}
+        token: ${{ secrets.SECRET_WORK_FLOW }}
+        path: temp-repo
 
-      - name: Create a temporary branch locally
-        run: |
-          cd ${{ env.REPO_PATH }}
-          git checkout -b ${{ env.TEMP_BRANCH_NAME }}
+    - name: Copy swagger.yaml to repository service-catalog
+      run: |
+        cp swagger.yaml temp-repo/swagger.yaml
 
-      - name: Copy swagger.yaml to the new branch in repository githubworkflowB
-        run: cp ../swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
+    - name: Commit changes to new branch in service-catalog repository
+      run: |
+        cd temp-repo
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
+        git checkout -b update-swagger-${{ github.run_id }} # Crear y cambiar a una nueva rama
+        git add swagger.yaml
+        git commit -m "Update swagger.yaml"
+        git push origin update-swagger-${{ github.run_id }}
 
-      - name: Commit changes
-        run: |
-          cd ${{ env.REPO_PATH }}
-          git add swagger.yaml
-          git commit -m "Update swagger.yaml"
-
-      - name: Create PR using temporary local branch
-        run: |
-          gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
-            --base main \
-            --head ${{ env.TEMP_BRANCH_NAME }} \
-            --title "Update swagger.yaml" \
-            --body "Updated file swagger.yaml from repository A." \
-            --reviewer centralcordoba
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
+    - name: Create Pull Request using GitHub CLI
+      run: |
+        gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
+          --base main \
+          --head update-swagger-${{ github.run_id }} \
+          --title "Update de swagger.yaml" \
+          --body "Updated file swagger.yaml from incidents repository." \
+          --reviewer centralcordoba
+      env:
+        GH_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
