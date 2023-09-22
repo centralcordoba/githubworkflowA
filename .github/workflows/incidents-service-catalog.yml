@@ -1,46 +1,58 @@
-name: Update swagger.yaml repository service-catalog
+name: Update swagger.yaml repository githubworkflowB
 
 on:
   push:
     paths:
       - 'swagger.yaml'
 
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  REPO_NAME: githubworkflowB
+  REPO_PATH: temp-repo
+
 jobs:
-  update-swagger:
+  checkout-and-update:
+    name: Checkout and Update swagger.yaml
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Clone incidents repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Clone service-catalog repository
-      uses: actions/checkout@v2
-      with:
-        repository: centralcordoba/githubworkflowB
-        token: ${{ secrets.SECRET_WORK_FLOW }}
-        path: temp-repo
+      - name: Clone githubworkflowB repository
+        uses: actions/checkout@v3
+        with:
+          repository: centralcordoba/${{ env.REPO_NAME }}
+          token: ${{ secrets.SECRET_WORK_FLOW }}
+          path: ${{ env.REPO_PATH }}
 
-    - name: Copy swagger.yaml to repository service-catalog
-      run: |
-        cp swagger.yaml temp-repo/swagger.yaml
+      - name: Copy swagger.yaml to repository githubworkflowB
+        run: cp swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
 
-    - name: Commit changes to new branch in service-catalog repository
-      run: |
-        cd temp-repo
-        git config user.email "you@example.com"
-        git config user.name "Your Name"
-        git checkout -b update-swagger-${{ github.run_id }} # Crear y cambiar a una nueva rama
-        git add swagger.yaml
-        git commit -m "Update swagger.yaml"
-        git push origin update-swagger-${{ github.run_id }}
+      - name: Randomize Branch Name
+        run: echo "BRANCH_NAME=update-swagger-$(date +%s)" >> "$GITHUB_ENV"
 
-    - name: Create Pull Request using GitHub CLI
-      run: |
-        gh pr create --repo centralcordoba/githubworkflowB \
-          --base main \
-          --head update-swagger-${{ github.run_id }} \
-          --title "Update de swagger.yaml" \
-          --body "Updated file swagger.yaml from incidents repository." \
-          --reviewer centralcordoba
-      env:
-        GH_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
+      - name: Commit changes
+        id: commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "['swagger.yaml']"
+          default_author: github_actions
+          author_name: apibot
+          message: "Update swagger.yaml"
+          new_branch: ${{ env.BRANCH_NAME }}
+          directory: ${{ env.REPO_PATH }}
+
+      - name: Create PR
+        if: ${{ steps.commit.outputs.committed == 'true' }}
+        run: |
+          gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
+            --base main \
+            --head ${{ env.BRANCH_NAME }} \
+            --title "Update swagger.yaml" \
+            --body "Updated file swagger.yaml from incidents repository." \
+            --reviewer centralcordoba
+        env:
+          GITHUB_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
