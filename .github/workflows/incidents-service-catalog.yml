@@ -1,4 +1,4 @@
-name: Update swagger.yaml repository githubworkflowB
+name: Update swagger.yaml in repository githubworkflowB
 
 on:
   push:
@@ -12,14 +12,14 @@ permissions:
 env:
   REPO_NAME: githubworkflowB
   REPO_PATH: temp-repo
-  BRANCH_NAME: update-swagger-$(date +'%s')
+  TEMP_BRANCH_NAME: temp-update-swagger-$(date +'%s')
 
 jobs:
   checkout-and-update:
     name: Checkout and Update swagger.yaml
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repo A (the current repo)
         uses: actions/checkout@v3
 
       - name: Clone githubworkflowB repository
@@ -29,28 +29,27 @@ jobs:
           token: ${{ secrets.SECRET_WORK_FLOW }}
           path: ${{ env.REPO_PATH }}
 
-      - name: Create a new branch
+      - name: Create a temporary branch locally
         run: |
           cd ${{ env.REPO_PATH }}
-          git checkout -b ${{ env.BRANCH_NAME }}
+          git checkout -b ${{ env.TEMP_BRANCH_NAME }}
 
       - name: Copy swagger.yaml to the new branch in repository githubworkflowB
-        run: cp ../../swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
+        run: cp ../swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
 
       - name: Commit changes
         run: |
           cd ${{ env.REPO_PATH }}
           git add swagger.yaml
           git commit -m "Update swagger.yaml"
-          git push origin ${{ env.BRANCH_NAME }}
 
-      - name: Create PR
+      - name: Create PR using temporary local branch
         run: |
           gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
             --base main \
-            --head ${{ env.BRANCH_NAME }} \
+            --head ${{ env.TEMP_BRANCH_NAME }} \
             --title "Update swagger.yaml" \
-            --body "Updated file swagger.yaml from incidents repository." \
+            --body "Updated file swagger.yaml from repository A." \
             --reviewer centralcordoba
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
