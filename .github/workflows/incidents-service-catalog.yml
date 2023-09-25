@@ -7,11 +7,10 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  
+
 env:
   REPO_NAME: githubworkflowB
   REPO_PATH: temp-repo
-  SWAGGER_PATH: services/github.com/beyondtrust/incidents/swagger-docs
   TEMP_BRANCH_NAME: temp-update-swagger-$(date +'%s')
 
 jobs:
@@ -27,19 +26,20 @@ jobs:
       with:
         repository: centralcordoba/${{ env.REPO_NAME }}
         token: ${{ secrets.SECRET_WORK_FLOW }}
-        path: ${{ env.REPO_PATH }}
+        path: temp-repo
 
     - name: Copy swagger.yaml to repository service-catalog
       run: |
-        cp ${{ env.SWAGGER_PATH }}/swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
+        mkdir -p temp-repo/services/github.com/beyondtrust/incidents/swagger-docs  # Crear el directorio si no existe
+        cp swagger.yaml temp-repo/services/github.com/beyondtrust/incidents/swagger-docs/swagger.yaml  # Copiar a la ubicación deseada
 
     - name: Commit changes to new branch in service-catalog repository
       run: |
-        cd ${{ env.REPO_PATH }}
+        cd temp-repo
         git config user.email "you@example.com"
         git config user.name "Your Name"
         git checkout -b update-swagger-${{ github.run_id }} # Crear y cambiar a una nueva rama
-        git add swagger.yaml
+        git add services/github.com/beyondtrust/incidents/swagger-docs/swagger.yaml
         git commit -m "Update swagger.yaml"
         git push origin update-swagger-${{ github.run_id }}
 
