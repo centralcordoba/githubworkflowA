@@ -11,6 +11,7 @@ permissions:
 env:
   REPO_NAME: githubworkflowB
   REPO_PATH: temp-repo
+  SWAGGER_PATH: services/github.com/beyondtrust/incidents/swagger-docs
   TEMP_BRANCH_NAME: temp-update-swagger-$(date +'%s')
 
 jobs:
@@ -30,7 +31,7 @@ jobs:
 
     - name: Copy swagger.yaml to repository service-catalog
       run: |
-        cp swagger.yaml temp-repo/swagger.yaml
+        cp ${{ env.SWAGGER_PATH }}/swagger.yaml temp-repo/swagger.yaml
 
     - name: Commit changes to new branch in service-catalog repository
       run: |
