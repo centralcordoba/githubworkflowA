@@ -27,15 +27,15 @@ jobs:
       with:
         repository: centralcordoba/${{ env.REPO_NAME }}
         token: ${{ secrets.SECRET_WORK_FLOW }}
-        path: temp-repo
+        path: ${{ env.REPO_PATH }}
 
     - name: Copy swagger.yaml to repository service-catalog
       run: |
-        cp ${{ env.SWAGGER_PATH }}/swagger.yaml temp-repo/swagger.yaml
+        cp ${{ env.SWAGGER_PATH }}/swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
 
     - name: Commit changes to new branch in service-catalog repository
       run: |
-        cd temp-repo
+        cd ${{ env.REPO_PATH }}
         git config user.email "you@example.com"
         git config user.name "Your Name"
         git checkout -b update-swagger-${{ github.run_id }} # Crear y cambiar a una nueva rama
