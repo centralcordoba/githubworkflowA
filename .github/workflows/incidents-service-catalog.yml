@@ -3,15 +3,14 @@ name: Update swagger.yaml repository service-catalog
 on:
   push:
     paths:
-      - 'services/github.com/beyondtrust/incidents/swagger-docs/swagger.yaml'
+      - 'swagger.yaml'
 permissions:
   contents: write
   pull-requests: write
   
 env:
-  REPO_NAME: service-catalog
+  REPO_NAME: githubworkflowB
   REPO_PATH: temp-repo
-  SWAGGER_PATH: services/github.com/beyondtrust/incidents/swagger-docs
   TEMP_BRANCH_NAME: temp-update-swagger-$(date +'%s')
 
 jobs:
@@ -25,19 +24,19 @@ jobs:
     - name: Clone service-catalog repository
       uses: actions/checkout@v3
       with:
-        repository: ejimenez/${{ env.REPO_NAME }}
-        token: ${{ secrets.SERVICE_CATALOG_OPEN_PR_TOKEN }}
-        path: ${{ env.REPO_PATH }}
+        repository: centralcordoba/${{ env.REPO_NAME }}
+        token: ${{ secrets.SECRET_WORK_FLOW }}
+        path: temp-repo
 
     - name: Copy swagger.yaml to repository service-catalog
       run: |
-        cp ${{ env.SWAGGER_PATH }}/swagger.yaml ${{ env.REPO_PATH }}/swagger.yaml
+        cp swagger.yaml temp-repo/swagger.yaml
 
     - name: Commit changes to new branch in service-catalog repository
       run: |
-        cd ${{ env.REPO_PATH }}
-        git config user.email "ejimenez@beyondtrust.com"
-        git config user.name "Emanuel Jimenez"
+        cd temp-repo
+        git config user.email "you@example.com"
+        git config user.name "Your Name"
         git checkout -b update-swagger-${{ github.run_id }} # Crear y cambiar a una nueva rama
         git add swagger.yaml
         git commit -m "Update swagger.yaml"
@@ -45,11 +44,11 @@ jobs:
 
     - name: Create Pull Request using GitHub CLI
       run: |
-        gh pr create --repo ejimenez/${{ env.REPO_NAME }} \
+        gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
           --base main \
           --head update-swagger-${{ github.run_id }} \
           --title "Update de swagger.yaml" \
           --body "Updated file swagger.yaml from incidents repository." \
-          --reviewer ejimenez
+          --reviewer centralcordoba
       env:
-        GH_TOKEN: ${{ secrets.SERVICE_CATALOG_OPEN_PR_TOKEN }}
+        GH_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
