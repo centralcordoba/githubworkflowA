@@ -37,8 +37,7 @@ jobs:
     - name: Commit changes to new branch in service-catalog repository
       run: |
         cd temp-repo
-        git config user.email "you@example.com"
-        git config user.name "Your Name"
+        git config user.name "github-actions[bot]"
         git checkout -b update-swagger-${{ github.run_id }}
         git add ${{ env.SWAGGER_DEST_PATH }}/swagger.yaml
         git commit -m "Update swagger.yaml"
