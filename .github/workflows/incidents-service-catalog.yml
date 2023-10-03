@@ -48,8 +48,7 @@ jobs:
         gh pr create --repo centralcordoba/${{ env.REPO_NAME }} \
           --base main \
           --head update-swagger-${{ github.run_id }} \
-          --title "Update de swagger.yaml" \
-          --body "Updated file swagger.yaml from incidents repository." \
-          --reviewer centralcordoba
+          --title "Update swagger.yaml" \
+          --body "Updated file swagger.yaml from incidents repository."
       env:
         GH_TOKEN: ${{ secrets.SECRET_WORK_FLOW }}
