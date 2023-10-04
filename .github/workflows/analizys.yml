@@ -1,34 +1,26 @@
-name: Check Vulnerabilities
+name: Scan Vulnerabilities
 
-on: 
+on:
   workflow_dispatch:
 
 jobs:
   scan-vulnerabilities:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-      
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Check out code
+        uses: actions/checkout@v2
         
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas requests
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
         
-    - name: Run Vulnerability Scan
-      run: python .github/scripts/scan_repositories.py
-      
-    - name: List Files in scripts directory
-      run: ls -l .github/scripts/
-      
-    - name: Upload CSV
-      uses: actions/upload-artifact@v2
-      with:
-        name: vulnerabilities.csv
-        path: .github/scripts/vulnerabilities1.csv
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Run Script
+        run: python .github/scripts/scan_repositories.py
+        env:  # Pasando el token como una variable de entorno al script
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
