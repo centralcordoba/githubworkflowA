@@ -17,3 +17,9 @@ jobs:
       run: bash .github/scripts/vulnerability-check.sh
       env:
         GH_TOKEN: ${{ secrets.GH_PAT }}
+        
+    - name: Archive Vulnerability Data
+      uses: actions/upload-artifact@v2
+      with:
+        name: vulnerabilities
+        path: vulnerabilities.csv
