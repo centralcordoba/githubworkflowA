@@ -1,6 +1,6 @@
-name: Vulnerability Scan
+name: Check Vulnerabilities
 
-on:
+on: 
   workflow_dispatch:
 
 jobs:
@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Check out code
+    - name: Checkout Code
       uses: actions/checkout@v2
       
     - name: Set up Python
@@ -23,11 +23,12 @@ jobs:
         
     - name: Run Vulnerability Scan
       run: python .github/scripts/scan_repositories.py
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+      
+    - name: List Files in scripts directory
+      run: ls -l .github/scripts/
+      
     - name: Upload CSV
       uses: actions/upload-artifact@v2
       with:
         name: vulnerabilities.csv
-        path: .github/scripts/vulnerabilities1.csv  # Asegúrate de que esta ruta es correcta
+        path: .github/scripts/vulnerabilities1.csv
