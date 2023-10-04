@@ -30,4 +30,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: vulnerabilities.csv
-        path: scripts/vulnerabilities1.csv  # Asegúrate de que esta ruta es correcta
+        path: .github/scripts/vulnerabilities1.csv  # Asegúrate de que esta ruta es correcta
