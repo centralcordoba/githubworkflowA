@@ -6,14 +6,12 @@ on:
 jobs:
   scan-vulnerabilities:
     runs-on: ubuntu-latest
-    outputs:  # Los outputs se definen aquí dentro de un job, no al nivel del workflow
-      vulnerabilities: ${{ steps.scan-vulnerabilities.outputs.results }}  # Esto depende de los outputs de tu acción
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - name: Security Scan
         id: scan-vulnerabilities  # ID para referenciar los outputs después
-        uses: github/codeql-action@v2
+        uses: github/codeql-action@v3
         with:
           language: python
           output-format: csv
