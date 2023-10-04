@@ -1,35 +1,40 @@
-import os
 import requests
 import csv
 
-# Lista de repositorios a verificar
-REPOSITORIES = ["org/repo1", "org/repo2"]
-
 # Token de GitHub para autenticación
-GITHUB_TOKEN = os.environ.get("GH_TOKEN")
+GITHUB_TOKEN = "GH_TOKEN"
 
-# Headers para las peticiones a la API
+# Lista de repositorios a comprobar
+REPOSITORIES = ["centralcordoba/githubworkflowA", "centralcordoba/MarvelAngular"]
+
+# URL de la API de GitHub para solicitar las vulnerabilidades
+API_URL_TEMPLATE = "https://api.github.com/repos/{}/vulnerability-alerts"
+
+# Headers para la solicitud a la API de GitHub
 HEADERS = {
     "Authorization": f"token {GITHUB_TOKEN}",
-    "Accept": "application/vnd.github.v3+json"
+    "Accept": "application/vnd.github.v3+json",
 }
 
-# Archivo CSV donde se guardarán los resultados
-CSV_FILE = "vulnerabilities.csv"
+# Inicializar un archivo CSV para registrar las vulnerabilidades
+with open("vulnerabilities.csv", mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Repository", "Vulnerability Name", "Severity", "Package Name", "Package Version"])
 
-def get_vulnerabilities(repo):
-    # Esta función deberá implementar la lógica para obtener las vulnerabilidades
-    # usando la API de GitHub (suponiendo que tienes acceso a las alertas de seguridad)
-    pass
-
-def write_to_csv(vulnerabilities):
-    # Esta función escribirá las vulnerabilidades al CSV
-    pass
-
-def main():
+    # Iterar a través de cada repositorio y registrar las vulnerabilidades en el CSV
     for repo in REPOSITORIES:
-        vulnerabilities = get_vulnerabilities(repo)
-        write_to_csv(vulnerabilities)
-
-if __name__ == "__main__":
-    main()
+        response = requests.get(API_URL_TEMPLATE.format(repo), headers=HEADERS)
+        
+        # Gestión de errores básica para la respuesta de la API
+        if response.status_code == 200:
+            vulnerabilities = response.json()
+            for vuln in vulnerabilities:
+                writer.writerow([
+                    repo,
+                    vuln["name"],
+                    vuln["severity"],
+                    vuln["package_name"],
+                    vuln["package_version"],
+                ])
+        else:
+            print(f"Error fetching data for {repo}: {response.status_code}")

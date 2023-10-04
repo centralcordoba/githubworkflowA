@@ -3,6 +3,7 @@ name: Scan Repositories for Vulnerabilities
 on:
   schedule:
     - cron: '0 0 * * 0' # Ejecutar cada domingo a medianoche
+  workflow_dispatch: # Esto permite la ejecución manual desde GitHub UI
 
 jobs:
   scan:
