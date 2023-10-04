@@ -23,4 +23,4 @@ jobs:
       - name: Run Script
         run: python .github/scripts/scan_repositories.py
         env:  # Pasando el token como una variable de entorno al script
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
