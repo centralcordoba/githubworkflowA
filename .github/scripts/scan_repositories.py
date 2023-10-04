@@ -1,39 +1,59 @@
-import os
 import requests
-import pandas as pd
+import csv
 
-# Definir constantes
-GITHUB_TOKEN = os.getenv('GH_TOKEN')  # Asegúrate de configurar este secreto en tu GitHub Actions
-REPOSITORIES = ["centralcordoba/githubworkflowA", "centralcordoba/MarvelAngular"]  # Lista de repositorios a verificar
-API_URL_TEMPLATE = "https://api.github.com/repos/{}/vulnerability-alerts"
+# Tus repositorios para chequear
+REPOSITORIES = [
+    "centralcordoba/backendappNetCore",
+    "centralcordoba/MarvelAngular"
+]
 
-# Configurar encabezados de solicitud
+# URL Base para la API de GitHub
+API_URL = "https://api.github.com/repos/"
+
+# Token de GitHub - Asegúrate de mantenerlo secreto y seguro
+TOKEN = "GH_TOKEN"
+
+# Headers para las solicitudes a la API de GitHub
 HEADERS = {
-    "Authorization": f"token {GITHUB_TOKEN}",
+    "Authorization": f"token {TOKEN}",
     "Accept": "application/vnd.github.v3+json"
 }
 
-# Dataframe para almacenar datos de vulnerabilidad
-vulnerabilities_df = pd.DataFrame(columns=["Repo", "Vulnerability", "Severity"])
+# Función para obtener vulnerabilidades de un repositorio
+def get_vulnerabilities(repo):
+    url = f"{API_URL}{repo}/vulnerability-alerts"
+    response = requests.get(url, headers=HEADERS)
 
-# Iterar sobre cada repositorio
-for repo in REPOSITORIES:
-    # Solicitar datos de vulnerabilidades del repositorio
-    response = requests.get(API_URL_TEMPLATE.format(repo), headers=HEADERS)
+    # Debug: Imprimir estado de la solicitud y respuesta
+    print(f"Status Code for {repo}: {response.status_code}")
     
-    if response.status_code == 200:
-        vulnerabilities = response.json()
-        
-        # Extraer y almacenar datos de vulnerabilidad
+    if response.status_code != 200:
+        print(f"Failed to fetch vulnerabilities for {repo}.")
+        return []
+
+    # Suponiendo que la API devuelve una lista de vulnerabilidades
+    vulnerabilities = response.json()
+    
+    # Debug: Imprimir las vulnerabilidades recibidas
+    print(f"Vulnerabilities for {repo}: {vulnerabilities}")
+
+    return vulnerabilities
+
+# Inicializar el CSV
+with open("vulnerabilities.csv", mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Repository", "Vulnerability Name", "Severity", "Package Name", "Package Version"])
+
+    # Iterar sobre los repositorios y obtener sus vulnerabilidades
+    for repo in REPOSITORIES:
+        vulnerabilities = get_vulnerabilities(repo)
+
+        # Escribir las vulnerabilidades en el CSV
         for vuln in vulnerabilities:
-            vulnerabilities_df = vulnerabilities_df.append({
-                "Repo": repo,
-                "Vulnerability": vuln.get("name", ""),
-                "Severity": vuln.get("severity", "")
-            }, ignore_index=True)
-    
-    else:
-        print(f"Failed to fetch vulnerabilities for {repo}: {response.status_code}")
-    
-# Guardar datos en un archivo CSV
-vulnerabilities_df.to_csv("vulnerabilities.csv", index=False)
+            try:
+                writer.writerow([repo, vuln["name"], vuln["severity"], vuln["package_name"], vuln["package_version"]])
+            except KeyError as e:
+                # Si algún campo no existe o es diferente, imprimirlo para debug
+                print(f"Error writing data for {repo}, missing key: {e}")
+
+print("Script execution completed.")
