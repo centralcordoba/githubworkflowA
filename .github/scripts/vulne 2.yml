@@ -1,8 +1,9 @@
 name: Check Vulnerabilities
 
-on:
+on: 
   schedule:
     - cron: '0 0 * * 1'  # ejecuta este flujo de trabajo una vez a la semana
+  workflow_dispatch:  # permite la ejecución manual del flujo de trabajo
 
 jobs:
   check-vulnerabilities:
@@ -15,4 +16,4 @@ jobs:
     - name: Check Repo Vulnerabilities
       run: bash .github/scripts/vulnerability-check.sh
       env:
-        SECURITY_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
+        SECURITY_GITHUB: ${{ secrets.SECURITY_GITHUB2 }}
