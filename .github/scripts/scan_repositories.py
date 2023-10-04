@@ -4,7 +4,7 @@ import pandas as pd
 
 # Definir constantes
 GITHUB_TOKEN = os.getenv('GH_TOKEN')  # Asegúrate de configurar este secreto en tu GitHub Actions
-REPOSITORIES = ["repo_owner/repo1", "repo_owner/repo2"]  # Lista de repositorios a verificar
+REPOSITORIES = ["centralcordoba/githubworkflowA", "centralcordoba/MarvelAngular"]  # Lista de repositorios a verificar
 API_URL_TEMPLATE = "https://api.github.com/repos/{}/vulnerability-alerts"
 
 # Configurar encabezados de solicitud
