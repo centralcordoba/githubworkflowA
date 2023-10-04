@@ -12,7 +12,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - name: Security Scan
-        id: scan-vulnerabilities  # ID para referenciar los outputs después        
+        id: scan-vulnerabilities  # ID para referenciar los outputs después
+        uses: actions/security-scan@v3  # Asegúrate de que esta acción existe y es accesible
         with:
           language: python
           output-format: csv
