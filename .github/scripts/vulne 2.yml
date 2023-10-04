@@ -1,0 +1,18 @@
+name: Check Vulnerabilities
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # ejecuta este flujo de trabajo una vez a la semana
+
+jobs:
+  check-vulnerabilities:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Check Repo Vulnerabilities
+      run: bash .github/scripts/vulnerability-check.sh
+      env:
+        SECURITY_GITHUB: ${{ secrets.MY_GITHUB_TOKEN }}
