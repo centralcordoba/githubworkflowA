@@ -3,7 +3,7 @@ import csv
 
 # Tus repositorios para chequear
 REPOSITORIES = [
-    "centralcordoba/backendappNetCore",
+    "centralcordoba/githubworkflowA",
     "centralcordoba/MarvelAngular"
 ]
 
