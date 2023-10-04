@@ -17,7 +17,7 @@ TOKEN = os.getenv("GH_TOKEN")
 # Headers para las solicitudes a la API de GitHub
 HEADERS = {
     "Authorization": f"token {TOKEN}",
-    "Accept": "application/vnd.github.v3+json"
+    "Accept": "application/vnd.github.vixen-preview+json"
 }
 
 # Función para obtener vulnerabilidades de un repositorio
