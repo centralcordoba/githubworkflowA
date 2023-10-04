@@ -1,28 +1,29 @@
-name: Scan Repositories for Vulnerabilities
+name: Vulnerability Scan
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * 0' # Ejecutar cada domingo a medianoche
-  workflow_dispatch: # Esto permite la ejecución manual desde GitHub UI
+    - cron: '0 0 * * 0'  # Ejecutar cada domingo a medianoche
 
 jobs:
-  scan:
+  scan-vulnerabilities:
     runs-on: ubuntu-latest
+    
     steps:
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v2
       
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.9
-      
+        python-version: '3.x'  # Usa la versión 3.x de Python
+        
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install pandas requests  # Instala las bibliotecas necesarias
         
-    - name: Scan Repositories
+    - name: Run Vulnerability Scan
       run: python .github/scripts/scan_repositories.py
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # Asegúrate de tener un token de acceso personal aquí
