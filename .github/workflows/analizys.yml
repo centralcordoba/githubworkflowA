@@ -2,8 +2,6 @@ name: Vulnerability Scan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'  # Ejecutar cada domingo a medianoche
 
 jobs:
   scan-vulnerabilities:
@@ -16,14 +14,20 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'  # Usa la versión 3.x de Python
+        python-version: '3.x'
         
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pandas requests  # Instala las bibliotecas necesarias
+        pip install pandas requests
         
     - name: Run Vulnerability Scan
       run: python .github/scripts/scan_repositories.py
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # Asegúrate de tener un token de acceso personal aquí
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload CSV
+      uses: actions/upload-artifact@v2
+      with:
+        name: vulnerabilities.csv
+        path: scripts/vulnerabilities1.csv  # Asegúrate de que esta ruta es correcta
