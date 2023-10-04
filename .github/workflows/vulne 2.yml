@@ -16,4 +16,4 @@ jobs:
     - name: Check Repo Vulnerabilities
       run: bash .github/scripts/vulnerability-check.sh
       env:
-        SECURITY_GITHUB: ${{ secrets.SECURITY_GITHUB2 }}
+        SECURITY_GITHUB: ${{ secrets.SECRET_SECURITY }}
