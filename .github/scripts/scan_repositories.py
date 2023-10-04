@@ -1,5 +1,6 @@
 import requests
 import csv
+import os
 
 # Tus repositorios para chequear
 REPOSITORIES = [
