@@ -1,29 +1,3 @@
-name: Vulnerability Check
-
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'  # Ejecutar cada domingo a medianoche
-
-jobs:
-  check-vulnerabilities:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Run Vulnerability Check Script
-      run: bash .github/scripts/vulnerability-check.sh
-      env:
-        GH_TOKEN: ${{ secrets.GH_PAT }}
-        
-    - name: Archive Vulnerability Data
-      uses: actions/upload-artifact@v2
-      with:
-        name: vulnerabilities
-        path: vulnerabilities.csv
-        
 name: Vulnerabilidad Scan
 
 on:
