@@ -2,59 +2,59 @@ import requests
 import csv
 import os
 
-# Tus repositorios para chequear
-REPOSITORIES = [
-    "centralcordoba/githubworkflowA",
-    "centralcordoba/MarvelAngular"
-]
-
-# URL Base para la API de GitHub
-API_URL = "https://api.github.com/repos/"
-
-# Token de GitHub - Asegúrate de mantenerlo secreto y seguro
+# Obtener el token de GitHub desde las variables de entorno
 TOKEN = os.getenv("GH_TOKEN")
 
-# Headers para las solicitudes a la API de GitHub
+# Verificación del token
+if TOKEN is None:
+    raise ValueError("GH_TOKEN no está definido.")
+
+# Configuración del encabezado para las solicitudes HTTP
 HEADERS = {
     "Authorization": f"token {TOKEN}",
     "Accept": "application/vnd.github.vixen-preview+json"
 }
 
-# Función para obtener vulnerabilidades de un repositorio
-def get_vulnerabilities(repo):
-    url = f"{API_URL}{repo}/vulnerability-alerts"
-    response = requests.get(url, headers=HEADERS)
+# Repositorios a verificar
+REPOSITORIES = [
+    "centralcordoba/githubworkflowA",
+    "centralcordoba/MarvelAngular",
+    # Añadir más repositorios según sea necesario
+]
 
-    # Debug: Imprimir estado de la solicitud y respuesta
-    print(f"Status Code for {repo}: {response.status_code}")
-    
-    if response.status_code != 200:
-        print(f"Failed to fetch vulnerabilities for {repo}.")
-        return []
-
-    # Suponiendo que la API devuelve una lista de vulnerabilidades
-    vulnerabilities = response.json()
-    
-    # Debug: Imprimir las vulnerabilidades recibidas
-    print(f"Vulnerabilities for {repo}: {vulnerabilities}")
-
-    return vulnerabilities
-
-# Inicializar el CSV
-with open("vulnerabilities.csv", mode="w", newline="") as file:
+# Inicializar el archivo CSV
+with open('vulnerabilities.csv', mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
     writer.writerow(["Repository", "Vulnerability Name", "Severity", "Package Name", "Package Version"])
-
-    # Iterar sobre los repositorios y obtener sus vulnerabilidades
+    
+    # Loop a través de cada repositorio
     for repo in REPOSITORIES:
-        vulnerabilities = get_vulnerabilities(repo)
-
-        # Escribir las vulnerabilidades en el CSV
+        print(f"Fetching vulnerabilities for {repo}...")
+        url = f"https://api.github.com/repos/{repo}/vulnerability-alerts"
+        
+        # Realizar la solicitud HTTP
+        response = requests.get(url, headers=HEADERS)
+        
+        # Verificación de la respuesta
+        if response.status_code != 200:
+            print(f"Status Code for {repo}: {response.status_code}")
+            print("Failed to fetch vulnerabilities. Response Headers:")
+            print(response.headers)
+            print("Response Body:")
+            print(response.text)
+            continue
+        
+        # Procesar la respuesta JSON
+        vulnerabilities = response.json()
         for vuln in vulnerabilities:
-            try:
-                writer.writerow([repo, vuln["name"], vuln["severity"], vuln["package_name"], vuln["package_version"]])
-            except KeyError as e:
-                # Si algún campo no existe o es diferente, imprimirlo para debug
-                print(f"Error writing data for {repo}, missing key: {e}")
+            writer.writerow([
+                repo,
+                vuln.get('name', ''),
+                vuln.get('severity', ''),
+                vuln.get('vulnerable_package_name', ''),
+                vuln.get('vulnerable_package_version', '')
+            ])
+        
+        print(f"Vulnerabilities for {repo} fetched and recorded.")
 
 print("Script execution completed.")
