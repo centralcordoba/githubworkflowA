@@ -11,7 +11,7 @@ REPOSITORIES = [
 API_URL = "https://api.github.com/repos/"
 
 # Token de GitHub - Asegúrate de mantenerlo secreto y seguro
-TOKEN = "GH_TOKEN"
+TOKEN = os.getenv("GH_TOKEN")
 
 # Headers para las solicitudes a la API de GitHub
 HEADERS = {
