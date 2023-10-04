@@ -2,14 +2,6 @@ name: Vulnerabilidad Scan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'  # Ejecutar cada domingo a medianoche
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   scan-vulnerabilities:
