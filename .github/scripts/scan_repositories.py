@@ -21,7 +21,7 @@ HEADERS = {
     "Authorization": f"token {TOKEN}"
 }
 
-# Nombre del archivo CSV donde se guardarán los resultados
+# Nombre del archivo csv donde se guardarán los resultados
 CSV_FILENAME = "vulnerabilities.csv"
 
 def fetch_vulnerabilities(repo):
