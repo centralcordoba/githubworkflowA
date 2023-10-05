@@ -21,6 +21,6 @@ jobs:
     - name: Run script
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: ./scriptbash.sh
+      run: ./script.sh
 
 
