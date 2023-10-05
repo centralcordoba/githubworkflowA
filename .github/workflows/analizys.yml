@@ -1,34 +1,16 @@
-name: Check Vulnerabilities and Generate CSV
-
-on:
-  workflow_dispatch:
-
 jobs:
-  generate_csv:
+  scan-repositories:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-
-    - name: Install dependencies
+    - name: Set up Snyk and GitHub CLI
       run: |
-        python -m pip install --upgrade pip
-        pip install requests pandas
-    
+        # [Aquí podrían ir tus comandos para configurar Snyk y GitHub CLI]
+      
     - name: Run script
       env:
-        GH_TOKEN: ${{ secrets.GH_PAT }}
-      run: |
-        python .github/scripts/scan_repositories.py
-    
-    - name: Upload CSV as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: vulnerabilities
-        path: vulnerabilities.csv
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: ./scriptbash.sh
+
