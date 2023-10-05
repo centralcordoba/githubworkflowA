@@ -1,8 +1,7 @@
 name: Check Vulnerabilities and Generate CSV
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # ejecutar cada día a medianoche
+  workflow_dispatch:
 
 jobs:
   generate_csv:
