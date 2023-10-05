@@ -1,77 +1,52 @@
-import os
 import requests
-import csv
+import pandas as pd
+import os
 
-# URL base de la API de GitHub para obtener las vulnerabilidades
-VULNERABILITIES_URL = "https://api.github.com/repos/{}/vulnerability-alerts"
-
-# Repositorios a analizar
-REPOSITORIES = [
-    "centralcordoba/githubworkflowA",
-    "centralcordoba/MarvelAngular",
-    # ... otros repositorios ...
-]
-
-# Token de acceso personal de GitHub
-TOKEN = os.getenv("GH_TOKEN")
-
-# Encabezados de la solicitud HTTP
+# Reemplazar con tu token de GitHub
+TOKEN = 'GH_TOKEN'
 HEADERS = {
-    "Accept": "application/vnd.github.vixen-preview+json",
-    "Authorization": f"token {TOKEN}"
+    'Authorization': f'token {TOKEN}',
+    'Accept': 'application/vnd.github.vixen-preview+json'
 }
 
-# Nombre del archivo csv donde se guardarán los resultados
-CSV_FILENAME = "vulnerabilities.csv"
+# Lista de repositorios para verificar
+REPOS = [
+    {'owner': 'centralcordoba', 'repo': 'githubworkflowA'},
+    {'owner': 'centralcordoba', 'repo': 'MarvelAngular'},
+    # Añadir más repositorios si es necesario
+]
 
-def fetch_vulnerabilities(repo):
-    """
-    Fetch the vulnerabilities for the given repo using GitHub API.
-    
-    Parameters:
-        repo (str): The repository in the form "owner/repo".
-    
-    Returns:
-        dict: The JSON response from the API if successful, otherwise None.
-    """
-    response = requests.get(VULNERABILITIES_URL.format(repo), headers=HEADERS)
-    
-    if response.status_code == 204:
-        print(f"No vulnerabilities found for {repo}.")
-        return None
-    elif response.status_code == 200:
-        return response.json()
-    else:
-        print(f"Failed to fetch vulnerabilities for {repo}.")
-        print(f"Status Code for {repo}: {response.status_code}")
-        print(f"Response Headers:\n{response.headers}")
-        print(f"Response Body:\n{response.text}")
-        return None
+# Lista para almacenar los datos recopilados
+data = []
 
-def main():
-    """
-    Main function that fetches vulnerabilities for repositories and saves them to a CSV file.
-    """
-    with open(CSV_FILENAME, mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        # Escribir encabezados de columna
-        writer.writerow(["Repository", "Vulnerability Name", "Severity", "Package Name", "Package Version"])
+# Iterar sobre cada repositorio y obtener las alertas de seguridad
+for repo_info in REPOS:
+    owner = repo_info['owner']
+    repo = repo_info['repo']
+    url = f'https://api.github.com/repos/{owner}/{repo}/vulnerability-alerts'
+    
+    response = requests.get(url, headers=HEADERS)
+    
+    if response.status_code == 200:
+        vulnerabilities = response.json()
         
-        for repo in REPOSITORIES:
-            print(f"Fetching vulnerabilities for {repo}...")
-            vulnerabilities = fetch_vulnerabilities(repo)
-            
-            # Procesar las vulnerabilidades si las hay
-            if vulnerabilities:
-                for vuln in vulnerabilities:
-                    writer.writerow([
-                        repo,
-                        vuln['security_advisory']['ghsa_id'],
-                        vuln['security_advisory']['severity'],
-                        vuln['vulnerable_package_name'],
-                        vuln['vulnerable_package_version']
-                    ])
+        for vuln in vulnerabilities:
+            data.append({
+                'Repository': f"{owner}/{repo}",
+                'Vulnerability': vuln['security_advisory']['vulnerabilities'][0]['package']['name'],
+                'Severity': vuln['security_advisory']['vulnerabilities'][0]['severity'],
+                'Updated_At': vuln['security_advisory']['updated_at'],
+                'Advisory_URL': vuln['security_advisory']['html_url']
+            })
+    elif response.status_code == 404:
+        print(f"No vulnerabilities found for {owner}/{repo}.")
+    else:
+        print(f"Failed to fetch vulnerabilities for {owner}/{repo}.")
 
-# Si este script se ejecuta como el principal, ejecutar la función principal
-if __name__ == "__main__":
-    main()
+# Convertir los datos a un DataFrame y luego a un CSV
+if data:
+    df = pd.DataFrame(data)
+    df.to_csv('vulnerabilities.csv', index=False)
+    print("CSV file created successfully.")
+else:
+    print("No vulnerabilities found for all repositories.")
