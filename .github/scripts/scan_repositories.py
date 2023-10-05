@@ -6,7 +6,7 @@ import os
 logging.basicConfig(level=logging.INFO)
 
 # Token de autenticación para la API de GitHub
-TOKEN = os.environ.get("GITHUB_TOKEN")
+TOKEN = os.environ.get("GH_TOKEN")
 HEADERS = {
     "Accept": "application/vnd.github.vixen-preview+json",
     "Authorization": f"token {TOKEN}"
