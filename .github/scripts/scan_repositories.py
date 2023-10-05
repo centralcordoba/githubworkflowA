@@ -1,25 +1,19 @@
 import requests
-import pandas as pd
+import logging
 import os
 
-# Import logging
-import logging
-
+# Configuración de logging
 logging.basicConfig(level=logging.INFO)
 
-# Tu token personal de GitHub
-TOKEN = os.getenv("GH_TOKEN")
+# Token de autenticación para la API de GitHub
+TOKEN = os.environ.get("GITHUB_TOKEN")
 HEADERS = {
-    "Authorization": f"token {TOKEN}",
-    "Accept": "application/vnd.github.vixen-preview+json"
+    "Accept": "application/vnd.github.vixen-preview+json",
+    "Authorization": f"token {TOKEN}"
 }
 
 # Lista de repositorios a verificar
-REPO_LIST = [
-    'centralcordoba/githubworkflowA',
-    'centralcordoba/MarvelAngular',
-    # Agrega los repositorios adicionales aquí
-]
+REPOSITORIES = ["centralcordoba/githubworkflowA", "centralcordoba/MarvelAngular"]
 
 def fetch_vulnerabilities(repo):
     logging.info(f"Fetching vulnerabilities for {repo}...")
@@ -27,7 +21,11 @@ def fetch_vulnerabilities(repo):
     response = requests.get(url, headers=HEADERS)
 
     logging.info(f"Status Code for {repo}: {response.status_code}")
-    if response.status_code != 200:
+    
+    if response.status_code == 204:
+        logging.info(f"No vulnerabilities found for {repo}.")
+        return []
+    elif response.status_code != 200:
         logging.error(f"Failed to fetch vulnerabilities for {repo}.")
         logging.error(f"Response Headers: {response.headers}")
         logging.error(f"Response Body: {response.text}")
@@ -48,17 +46,18 @@ def fetch_vulnerabilities(repo):
 
 def main():
     all_vulnerabilities = []
-
-    for repo in REPO_LIST:
+    for repo in REPOSITORIES:
         vulnerabilities = fetch_vulnerabilities(repo)
         all_vulnerabilities.extend(vulnerabilities)
-
-    if all_vulnerabilities:
-        df = pd.DataFrame(all_vulnerabilities)
-        df.to_csv("vulnerabilities.csv", index=False)
-        logging.info("CSV file with vulnerabilities created successfully.")
-    else:
+    
+    if not all_vulnerabilities:
         logging.info("No vulnerabilities found for all repositories.")
+        return
+    
+    # Aquí puedes añadir lógica para procesar/exportar las vulnerabilidades, por ejemplo, guardarlas en un archivo CSV.
+    logging.info("Vulnerabilities found:")
+    for vuln in all_vulnerabilities:
+        logging.info(f"{vuln['Repository']}: {vuln['Vulnerability Name']} ({vuln['Severity']}) in {vuln['Package Name']} {vuln['Package Version']}")
 
 if __name__ == "__main__":
     main()
