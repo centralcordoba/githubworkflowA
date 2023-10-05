@@ -3,10 +3,10 @@
 # Autenticación (Asegúrate de que las variables de entorno o credenciales están configuradas previamente)
 
 # Configurar el token de GitHub (usando el secret GH_TOKEN)
-gh auth login --with-token < ${GH_TOKEN}
+echo $GH_TOKEN | gh auth login --with-token 
 
 # Configurar el token de Snyk (usando el secret SNYK_TOKEN)
-snyk auth ${SNYK_TOKEN}
+snyk auth $SNYK_TOKEN
 
 # Encabezados CSV
 echo "Repo,High,Medium,Low" > vulnerabilities.csv

@@ -14,14 +14,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Snyk and GitHub CLI
+    - name: Install dependencies
       run: |
-        # [Aquí podrían ir tus comandos para configurar Snyk y GitHub CLI]
+        sudo snap install gh --edge
+        npm install -g snyk
 
     - name: Make script executable
       run: chmod +x .github/scripts/script.sh
       
     - name: Run script
       env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: .github/scripts/script.sh
