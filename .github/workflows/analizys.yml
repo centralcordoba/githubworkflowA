@@ -3,7 +3,7 @@ name: Scan Repositories Workflow
 on: 
   push:
     branches: 
-      - main  # Ajusta al nombre de tu branch principal si es diferente
+      - main  
   workflow_dispatch: 
 
 jobs:
@@ -17,10 +17,11 @@ jobs:
     - name: Set up Snyk and GitHub CLI
       run: |
         # [Aquí podrían ir tus comandos para configurar Snyk y GitHub CLI]
+
+    - name: Make script executable
+      run: chmod +x .github/scripts/script.sh
       
     - name: Run script
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: .github/scripts/script.sh
-
-
